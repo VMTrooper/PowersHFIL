@@ -1,4 +1,4 @@
-# Import Modules
+﻿# Import Modules
 if ((Get-Module |where {$_.Name -ilike "CiscoUcsPS"}).Name -ine "CiscoUcsPS")
 	{
 	Write-Host "Loading Module: Cisco UCS PowerTool Module"
@@ -20,14 +20,12 @@ $WarningPreference = "SilentlyContinue"
 # Login to vCenter
 Write-Host "vC: Logging into vCenter: $vCenter"
 $vcenterlogin = Connect-VIServer $vCenter -User $vcuser -Password $vcpass | Out-Null
-
-
-$server = get-vmhost -name "san-cc2-blade24.san-dc1-core.cscehub.com"
-$vS0 = Get-VirtualSwitch -VMHost $server -Standard -Name vSwitch0
-Get-VMHostNetworkAdapter -VMHost $server -
-Remove-VMHostNetworkAdapter
-
-	# Logout of vCenter
-	Write-Host "vC: Logging out of vCenter: $vCenter"
-	$vcenterlogout = Disconnect-VIServer $vCenter -Confirm:$false
+#######################Action Code Begins###########################################
+Get-VMHost | Foreach {
+  Start-VMHostService -HostService ($_ | Get-VMHostService | Where { $_.Key -eq "TSM-SSH"} )
+}
+#######################Action Code Ends###########################################
+# Logout of vCenter
+Write-Host "vC: Logging out of vCenter: $vCenter"
+$vcenterlogout = Disconnect-VIServer $vCenter -Confirm:$false
 
