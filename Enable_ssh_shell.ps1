@@ -23,7 +23,26 @@ $vcenterlogin = Connect-VIServer $vCenter -User $vcuser -Password $vcpass | Out-
 #######################Action Code Begins###########################################
 Get-VMHost | Foreach {
   Start-VMHostService -HostService ($_ | Get-VMHostService | Where { $_.Key -eq "TSM-SSH"} )
+  Start-VMHostService -HostService ($_ | Get-VMHostService | Where { $_.Key -eq "TSM"} )
 }
+
+#Get-VMHost | Foreach {
+#  Stop-VMHostService -HostService ($_ | Get-VMHostService | Where { $_.Key -eq "TSM-SSH"} )
+#  Stop-VMHostService -HostService ($_ | Get-VMHostService | Where { $_.Key -eq "TSM"} )
+#}
+
+#Verify if service is running
+
+#Get-VMHost | Get-VMHostService | Where { $_.Key - -eq "TSM-SSH" } |select VMHost, Label, Running
+#Get-VMHost | Get-VMHostService | Where { $_.Key -eq "TSM" } |select VMHost, Label, Running
+#Get-VMHost | Get-VMHostService | Where { $_.Key -match "TSM" } | Where ($_.Running = "True") | select VMHost, Label, Running
+
+#Optimized NOTE: {} used instead of () for Boolean Check because of the cast error included below 
+Get-VMHost | Get-VMHostService | Where { $_.Key -match "TSM" } | Where {$_.Running -eq "True"} | select VMHost, Label, Running
+
+#ERROR: Where-Object : Cannot bind parameter 'FilterScript'. Cannot convert value "False" to type "System.Management.Automation.ScriptBlock". Error: "Invalid cast from 'System.Boolean' to 'System.Management.Automation.ScriptBlock'."
+#EXPLANATION: the parameter requires Script Block to be passed, Which is in curly braces. Just  replace your round braces with curly.
+
 #######################Action Code Ends###########################################
 # Logout of vCenter
 Write-Host "vC: Logging out of vCenter: $vCenter"
