@@ -11,15 +11,6 @@ if ((Get-PSSnapin | where {$_.Name -ilike "Vmware*Core"}).Name -ine "VMware.VimA
 	Add-PSSnapin VMware.VimAutomation.Core -ErrorAction SilentlyContinue
 	}
 
-# Global Variables
-$vCenter = "20.13.25.30"
-$vcuser = "soe-load"
-$vcpass = "V1rtu@1c3!"
-$WarningPreference = "SilentlyContinue"
-
-# Login to vCenter
-Write-Host "vC: Logging into vCenter: $vCenter"
-$vcenterlogin = Connect-VIServer $vCenter -User $vcuser -Password $vcpass | Out-Null
 #######################Action Code Begins###########################################
 Get-VMHost | Foreach {
   Start-VMHostService -HostService ($_ | Get-VMHostService | Where { $_.Key -eq "TSM-SSH"} )
@@ -44,7 +35,3 @@ Get-VMHost | Get-VMHostService | Where { $_.Key -match "TSM" } | Where {$_.Runni
 #EXPLANATION: the parameter requires Script Block to be passed, Which is in curly braces. Just  replace your round braces with curly.
 
 #######################Action Code Ends###########################################
-# Logout of vCenter
-Write-Host "vC: Logging out of vCenter: $vCenter"
-$vcenterlogout = Disconnect-VIServer $vCenter -Confirm:$false
-

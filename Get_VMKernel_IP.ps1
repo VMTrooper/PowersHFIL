@@ -1,4 +1,4 @@
-# Import Modules
+﻿# Import Modules
 if ((Get-Module |where {$_.Name -ilike "CiscoUcsPS"}).Name -ine "CiscoUcsPS")
 	{
 	Write-Host "Loading Module: Cisco UCS PowerTool Module"
@@ -13,8 +13,7 @@ if ((Get-PSSnapin | where {$_.Name -ilike "Vmware*Core"}).Name -ine "VMware.VimA
 
 
 
-$server = get-vmhost -name "san-cc2-blade24.san-dc1-core.cscehub.com"
-$vS0 = Get-VirtualSwitch -VMHost $server -Standard -Name vSwitch0
-Get-VMHostNetworkAdapter -VMHost $server -
-Remove-VMHostNetworkAdapter
+#######################Action Code Begins############################################
+Get-vmhost | Get-VMHostNetworkAdapter -VMKernel | select VMHost, Name, DeviceName, IP | Export-Csv test.csv
+#######################Action Code Ends##############################################
 
