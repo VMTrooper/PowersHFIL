@@ -1,0 +1,1 @@
+﻿new-vm -Name win2k12R2-01-control -ResourcePool Management -Datastore OPSTK-1 -GuestId "windows8Server64Guest"
